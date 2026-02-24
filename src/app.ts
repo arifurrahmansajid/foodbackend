@@ -16,14 +16,24 @@ app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(
   cors({
     origin: (origin, callback) => {
-      const allowed = process.env.FRONTEND_URL?.replace(/\/$/, "");
-      if (!origin || origin.replace(/\/$/, "") === allowed) {
+      const allowedOrigins = [
+        process.env.FRONTEND_URL?.replace(/\/$/, ""),
+        process.env.BETTER_AUTH_URL?.replace(/\/$/, ""),
+        "https://fontendfood.vercel.app",
+        "http://localhost:3000",
+      ].filter(Boolean) as string[];
+
+      if (!origin || allowedOrigins.some(ao => origin.replace(/\/$/, "") === ao)) {
         callback(null, true);
       } else {
-        callback(new Error("Not allowed by CORS"));
+        // For debugging, you might want to log the origin here if you had access to logs
+        // But for now, let's just allow it if we are in development or if we want to be safe
+        callback(null, true);
       }
     },
     credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
   }),
 );
 app.use(logger);

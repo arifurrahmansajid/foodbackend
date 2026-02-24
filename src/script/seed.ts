@@ -18,7 +18,7 @@ const AdminCreateInitialData = async () => {
       return;
     }
     const adminUser = await fetch(
-      `http://localhost:8080/api/auth/sign-up/email`,
+      `https://foodbackend-production-db06.up.railway.app/api/auth/sign-up/email`,
       {
         method: "POST",
         headers: {
